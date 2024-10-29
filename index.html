@@ -94,7 +94,16 @@
 --ring: 240 4.9% 83.9%;
 				}
 			}
+            img, video {
+    max-width: 10%;
+}
+
+flex justify-between items-center py-4 border-b border-border {   padding-left: 20px;
+    
+
+}
 		</style>
+        
   </head>
   <body>
     <div class="bg-background text-foreground min-h-screen p-4 space-y-6">
@@ -103,7 +112,7 @@
   
   <div class="flex justify-between items-center py-4 border-b border-border">
     <div class="flex items-center space-x-4">
-      <img src="https://placehold.co/40x40" alt="Company Logo" class="rounded-full">
+      <img src="360_F_518939699_8Zco4PagLxKxIFzWj7zYiZD6xSE9Ynb5.jpg" alt="Company Logo" class="rounded-full">
       <nav class="space-x-4">
         <a href="#" class="text-primary hover:underline" id="home-tab">Home</a>
         <a href="#" class="text-primary hover:underline" id="settings-tab">Settings</a>
@@ -154,24 +163,6 @@
     </ul>
   </div>
 
-  <div id="all-data" class="hidden bg-card p-4 rounded-lg shadow">
-    <h2 class="text-xl font-bold mb-4">All Data from tracking (M)</h2>
-    <table class="w-full text-left">
-      <thead>
-        <tr class="border-b border-border">
-          <th class="py-2">Device Number</th>
-          <th class="py-2">Team Name</th>
-          <th class="py-2">Member Name</th>
-          <th class="py-2">Tasks Completed</th>
-          <th class="py-2">Quality Rating</th>
-        </tr>
-      </thead>
-      <tbody id="all-data-details">
-        <!-- سيتم ملء البيانات هنا -->
-      </tbody>
-    </table>
-    <div id="error-message" class="text-red-500 mt-4"></div>
-  </div>
 </div>
 
 <script>
