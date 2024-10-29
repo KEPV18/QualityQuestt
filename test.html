@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheets API - Get Sheet Names</title>
+    <script>
+        const apiKey = 'AIzaSyDctNVWQhbsQMEDfJDXI30emaTd8mtviEY';
+        const sheetId = '1EbKvgMRzVKucfGuIOUqJbfncI194MNGJO-9ZVmIJnIw';
+
+        async function getSheetData(sheetName) {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                displaySheetData(data.values);
+            } catch (error) {
+                console.error("Failed to fetch sheet data:", error);
+                document.getElementById('output').innerText = 'Error fetching sheet data.';
+            }
+        }
+
+        function displaySheetData(sheetData) {
+            const output = document.getElementById('output');
+            output.innerHTML = ''; // Clear previous output
+            sheetData.forEach(row => {
+                const li = document.createElement('li');
+                li.textContent = row.join(', ');
+                output.appendChild(li);
+            });
+        }
+
+        window.onload = () => getSheetData('tracking(M)');
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #fff;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Google Sheets - Sheet Names</h1>
+    <ul id="output">
+        <!-- Sheet names will be displayed here -->
+    </ul>
+</body>
+</html>
+
+
+img, video {
+    max-width: 10%;
+}
