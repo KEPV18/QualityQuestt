@@ -4,6 +4,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
 		<script src="https://unpkg.com/unlazy@0.11.3/dist/unlazy.with-hashing.iife.js" defer init></script>
+    <script>
+        // جلب البيانات الأولية وتخزينها في localStorage
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchInitialData(); // جلب البيانات الثابتة عند تحميل الصفحة
+            updateDynamicData(); // تحديث البيانات المتغيرة في أول مرة
+            setInterval(updateDynamicData, 300000); // تحديث البيانات كل 5 دقائق
+        });
+
+        // جلب البيانات الثابتة من Google Sheets وتخزينها في localStorage
+        function fetchInitialData() {
+            const cachedData = localStorage.getItem("staticData");
+            if (cachedData) {
+                displayStaticData(JSON.parse(cachedData)); // عرض البيانات المخزنة
+            } else {
+                fetch("/api/staticData") // مسار API للبيانات الثابتة
+                    .then(response => response.json())
+                    .then(data => {
+                        localStorage.setItem("staticData", JSON.stringify(data)); // تخزين البيانات الثابتة في localStorage
+                        displayStaticData(data); // عرض البيانات الثابتة
+                    })
+                    .catch(error => console.error("Error fetching initial data:", error));
+            }
+        }
+
+        // تحديث البيانات الديناميكية باستخدام AJAX
+        function updateDynamicData() {
+            const cachedData = localStorage.getItem("staticData");
+            if (cachedData) {
+                const data = JSON.parse(cachedData);
+                const teamMembers = data.teamMembers; // افترض أن البيانات الثابتة تحتوي على أعضاء الفريق
+
+                fetch("/api/dynamicData") // مسار API لعدد التاسكات ونسبة الجودة
+                    .then(response => response.json())
+                    .then(dynamicData => {
+                        // تحديث عدد التاسكات ونسبة الجودة لكل عضو
+                        teamMembers.forEach(member => {
+                            member.tasks = dynamicData[member.email]?.tasks || member.tasks; // تحديث عدد التاسكات
+                            member.quality = dynamicData[member.email]?.quality || member.quality; // تحديث نسبة الجودة
+                        });
+                        // تحديث واجهة المستخدم
+                        updateTeamRankings(teamMembers);
+                    })
+                    .catch(error => console.error("Error fetching dynamic data:", error));
+            }
+        }
+
+        // تحديث تصنيفات الفرق باستخدام البيانات المحدثة
+        function updateTeamRankings(teamMembers) {
+            const teamRankings = document.getElementById('team-rankings');
+            const rankings = teamMembers.reduce((acc, member) => {
+                const teamName = member.teamName; // افترض أن كل عضو لديه اسم الفريق
+                if (!acc[teamName]) {
+                    acc[teamName] = { totalTasks: 0, overallQuality: 0, count: 0 };
+                }
+                acc[teamName].totalTasks += member.tasks;
+                acc[teamName].overallQuality += parseFloat(member.quality);
+                acc[teamName].count += 1;
+                return acc;
+            }, {});
+
+            // تحديث واجهة المستخدم
+            teamRankings.innerHTML = Object.entries(rankings).map(([teamName, { totalTasks, overallQuality, count }]) => `
+                <li class="border-b border-border py-2">
+                    <span class="font-semibold">${teamName}</span>: 
+                    Total Tasks: ${totalTasks}, 
+                    Overall Quality: ${(overallQuality / count).toFixed(2)}%
+                </li>
+            `).join('');
+        }
+    </script>
 		<script type="text/javascript">
 			window.tailwind.config = {
 				darkMode: ['class'],
@@ -203,14 +273,14 @@ flex justify-between items-center py-4 border-b border-border {   padding-left: 
         // البحث عن الصفوف التي تحتوي على البريد الإلكتروني
         const userRows = rows.filter(row => row[1] === email); // العمود B (index 1)
 
-        // إذا كان هناك صفوف، نأخذ آخر صف ونرجع الرابط من العمود D (index 3)
+        // إذا كان هناك صفوف، نأخذ آخر صف ونرجع الرابط من العمود D (index 2)
         if (userRows.length > 0) {
-            return userRows[userRows.length - 1][3]; // العمود D (index 3)
+            return userRows[userRows.length - 1][2]; // العمود D (index 2)
         }
-        return ''; // إذا لم يوجد أي صفوف
+        return 'لا توجد بيانات لللينك'; // إذا لم يوجد أي صفوف
     } catch (error) {
         console.error('Error fetching last task:', error);
-        return '';
+        return 'خطأ في جلب البيانات'; // رسالة خطأ
     }
   }
 
@@ -289,7 +359,11 @@ flex justify-between items-center py-4 border-b border-border {   padding-left: 
             <td class="py-2">${member.memberName}</td>
             <td class="py-2">${member.tasks}</td>
             <td class="py-2">${member.quality}</td>
-            <td class="py-2">${member.lastTask}</td>
+            <td class="py-2">
+              <button onclick="copyToClipboard('${member.lastTask}')" class="text-blue-500 underline">
+                ${member.lastTask || 'لا يوجد لينك'}
+              </button>
+            </td>
           </tr>
         `).join('');
 
@@ -374,6 +448,15 @@ flex justify-between items-center py-4 border-b border-border {   padding-left: 
         Overall Quality: ${ranking.overallQuality.toFixed(2)}%
       </li>
     `).join('');
+  }
+
+  // إضافة وظيفة لنسخ اللينك عند الضغط عليه
+  function copyToClipboard(link) {
+    navigator.clipboard.writeText(link).then(() => {
+      alert('تم نسخ اللينك إلى الحافظة!'); // رسالة تأكيد
+    }).catch(err => {
+      console.error('Error copying text: ', err);
+    });
   }
 
   // Call the updateTeamRankings function after initializing team selection
