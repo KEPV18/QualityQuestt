@@ -17,7 +17,6 @@
         }
         h1 {
           color: #4a4e69;
-          margin-bottom: 0px;
         }
         p {
             
@@ -108,11 +107,28 @@
                 width: 100%; /* Make select full width on mobile */
             }
         }
+        #welcomeMessage {
+            font-size: 24px;
+            color: #4a4e69;
+            white-space: nowrap; /* Prevent text wrapping */
+            overflow: hidden; /* Hide overflow */
+            position: relative; /* Position relative for animation */
+            animation: slide 10s linear infinite; /* Animation for sliding effect */
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(100%); /* Start from right */
+            }
+            100% {
+                transform: translateX(-100%); /* Move to left */
+            }
+        }
     </style>
 </head>
 <body>
+    <div id="welcomeMessage">Welcome to TT, short for Team Tracker by Ahmed Khaled</div>
     <h1>Team Tracker</h1>
-    <p class="text-center text-sm text-muted-foreground">by Ahmed Khaled</p>
     <select id="teamSelect" onchange="updateTable()">
         <option value="">Select Team</option>
         <option value="nermin">Nermin</option>
@@ -131,7 +147,7 @@
                 <th>Name</th>
                 <th>Tasks Completed Today</th>
                 <th>Quality</th>
-                <th>Last Task Link</th>
+                <th>Count for all queues</th>
             </tr>
         </thead>
         <tbody id="teamTableBody">
@@ -231,16 +247,7 @@
                 const trackingRow = trackingData.find(row => row[2] === member.email); // العمود C
                 const tasksCompleted = trackingRow ? trackingRow[13] : "N/A"; // العمود N
                 const quality = trackingRow ? trackingRow[12] : "N/A"; // العمود M
-
-                // البحث عن رابط آخر مهمة في Form2
-                const formRows = formData.filter(row => row[1]); // تأكد من أن row[1] معرف
-                let lastTaskLink = "N/A"; // استخدم let بدلاً من const
-                for (let i = formRows.length - 1; i >= 0; i--) { // بدء البحث من الصف الأخير
-                    if (formRows[i][1].toLowerCase() === member.email.toLowerCase()) {
-                        lastTaskLink = formRows[i][3] || "N/A"; // العمود D
-                        break; // الخروج من الحلقة عند العثور على أول تطابق
-                    }
-                }
+                const additionalInfo = trackingRow ? trackingRow[6] : "N/A"; // العمود G
 
                 // إضافة الصف إلى الجدول
                 const row = document.createElement("tr");
@@ -251,9 +258,7 @@
                     <td>${member.name}</td>
                     <td>${tasksCompleted}</td>
                     <td>${quality}</td>
-                    <td>
-                        ${lastTaskLink !== "N/A" ? `<a href="${lastTaskLink}" target="_blank">🔗</a> <button onclick="copyToClipboard('${lastTaskLink}')">نسخ</button>` : "N/A"}
-                    </td>
+                    <td>${additionalInfo}</td>
                 `;
                 teamTableBody.appendChild(row);
             });
