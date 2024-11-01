@@ -12,11 +12,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #f5f5f5;
-            color: #333;
+            background-color: #fff;
+            color: #000;
         }
         h1, h2, h3, h4 {
-            color: #e60000;
+            color: #ff6f20;
         }
         p {
             margin-bottom: 40px;
@@ -25,12 +25,14 @@
             margin-bottom: 20px;
             padding: 10px;
             font-size: 16px;
-            border: 1px solid #e60000;
+            border: 1px solid #ff6f20;
             border-radius: 5px;
             transition: border-color 0.3s;
+            background-color: #f9f9f9;
+            color: #000;
         }
         #teamSelect:focus {
-            border-color: #c70000;
+            border-color: #ff6f20;
         }
         table {
             border-collapse: collapse;
@@ -41,16 +43,16 @@
             overflow: hidden;
         }
         th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #ff6f20;
             padding: 12px;
             text-align: center;
         }
         th {
-            background-color: #e60000;
+            background-color: #ff6f20;
             color: #fff;
         }
         tr:nth-child(even) {
-            background-color: #f0f0f0;
+            background-color: #f2f2f2;
         }
         tr:hover {
             background-color: #e0e0e0;
@@ -64,7 +66,7 @@
         }
         .card {
             background-color: #fff;
-            border: 2px solid #e60000;
+            border: 2px solid #ff6f20;
             border-radius: 10px;
             padding: 20px;
             width: 22%;
@@ -72,7 +74,7 @@
             position: relative;
             margin: 10px;
             transition: transform 0.3s;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .card:hover {
             transform: scale(1.05);
@@ -103,7 +105,7 @@
             display: none;
             margin: 20px auto;
             font-size: 24px;
-            color: #e60000;
+            color: #ff6f20;
         }
         @media (max-width: 768px) {
             body {
@@ -248,7 +250,7 @@
                 balloon.className = 'balloon';
                 balloon.innerHTML = Math.random() < 0.5 ? '🎈' : heartSymbol; // اختيار عشوائي بين البالون ورمز القلب
                 balloon.style.position = 'absolute';
-                balloon.style.left = Math.random() * 100 + 'vw'; // موقع عشوائي على المحور الأفقي
+                balloon.style.left = Math.random() * 100 + 'vw'; // موع عشوائي على المحور الأفقي
                 balloon.style.top = Math.random() * 100 + 'vh'; // موقع عشوائي على المحور العمودي
                 balloon.style.opacity = '1';
                 balloon.style.transition = 'opacity 0.5s';
@@ -334,7 +336,7 @@
             teamTableBody.innerHTML = '';
 
             teamDataStatic[selectedTeam].forEach((member) => {
-                // البحث عن بيانات المهام والكفاءة في tracking(M)
+                // البحث عن بيانات المهام والكف��ءة في tracking(M)
                 const trackingRow = trackingData.find(row => row[2] === member.email); // العمود C
                 const tasksCompleted = trackingRow ? trackingRow[13] : "N/A"; // العمود N
                 const quality = trackingRow ? trackingRow[12] : "N/A"; // العمود M
@@ -412,7 +414,7 @@
             teamRankingDiv.innerHTML = `${teamRankingHtml || 'No teams with tasks or quality points.'}`;
         }
 
-        // دالة لحساب أداء الأعضاء
+        // دالة لحسب أداء الأعضاء
         function calculateIndividualPerformance() {
             const individualPerformance = [];
 
