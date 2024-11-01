@@ -8,120 +8,117 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          background-color: #f4f7fa;
-          transition: background-color 0.3s;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f5f5f5;
+            color: #333;
         }
-        h1 {
-          color: #4a4e69;
+        h1, h2, h3, h4 {
+            color: #e60000;
         }
         p {
-            
             margin-bottom: 40px;
         }
         #teamSelect {
-          margin-bottom: 20px;
-          padding: 10px;
-          font-size: 16px;
-          border: 1px solid #4a4e69;
-          border-radius: 5px;
-          transition: border-color 0.3s;
+            margin-bottom: 20px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #e60000;
+            border-radius: 5px;
+            transition: border-color 0.3s;
         }
         #teamSelect:focus {
-          border-color: #9a8c98;
+            border-color: #c70000;
         }
         table {
-          border-collapse: collapse;
-          width: 80%;
-          margin-top: 20px;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-          border-radius: 10px;
-          overflow: hidden;
-        }
-        th, td {
-          border: 1px solid #ddd;
-          padding: 12px;
-          text-align: center;
-        }
-        th {
-          background-color: #4a4e69;
-          color: #fff;
-        }
-        tr:nth-child(even) {
-          background-color: #f2f2f2;
-        }
-        tr:hover {
-          background-color: #d1ecf1;
-        }
-        .icon {
-          width: 20px;
-          height: 20px;
-        }
-        #teamStats {
-            background-color: #ffffff;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-collapse: collapse;
             width: 80%;
             margin-top: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
         }
-        #topTeams, #teamRanking, #topThreeTasks, #topThreeQuality {
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 1px solid #4a4e69;
-            border-radius: 5px;
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
         }
-        h2, h3, h4 {
-            color: #4a4e69;
+        th {
+            background-color: #e60000;
+            color: #fff;
         }
-        .team-stat {
-            font-size: 16px;
-            line-height: 1.5;
+        tr:nth-child(even) {
+            background-color: #f0f0f0;
+        }
+        tr:hover {
+            background-color: #e0e0e0;
+        }
+        .card-container {
+            display: flex;
+            justify-content: space-around;
+            width: 80%;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .card {
+            background-color: #fff;
+            border: 2px solid #e60000;
+            border-radius: 10px;
+            padding: 20px;
+            width: 22%;
+            text-align: center;
+            position: relative;
+            margin: 10px;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .balloon {
+            font-size: 30px;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        .card:hover .balloon {
+            opacity: 1;
+            animation: fly 1s forwards;
+        }
+        @keyframes fly {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100px); opacity: 0; }
         }
         .loader {
             display: none;
             margin: 20px auto;
             font-size: 24px;
-            color: #4a4e69;
+            color: #e60000;
         }
         @media (max-width: 768px) {
             body {
-                padding: 10px; /* Add padding for mobile */
+                padding: 10px;
             }
             table {
-                width: 100%; /* Make table full width on mobile */
+                width: 100%;
             }
-            #teamStats {
-                width: 100%; /* Make stats section full width on mobile */
+            .card-container {
+                flex-direction: column;
+                align-items: center;
             }
-            h1 {
-                font-size: 24px; /* Adjust heading size for mobile */
-            }
-            h2, h3, h4 {
-                font-size: 20px; /* Adjust subheading sizes for mobile */
-            }
-            #teamSelect {
-                width: 100%; /* Make select full width on mobile */
-            }
-        }
-        #welcomeMessage {
-            font-size: 24px;
-            color: #4a4e69;
-            white-space: nowrap; /* Prevent text wrapping */
-            overflow: hidden; /* Hide overflow */
-            position: relative; /* Position relative for animation */
-            animation: slide 10s linear infinite; /* Animation for sliding effect */
-        }
-
-        @keyframes slide {
-            0% {
-                transform: translateX(100%); /* Start from right */
-            }
-            100% {
-                transform: translateX(-100%); /* Move to left */
+            .card {
+                width: 80%;
+                margin-bottom: 20px;
             }
         }
     </style>
@@ -154,12 +151,27 @@
         </tbody>
     </table>
 
-    <div id="teamStats">
-        <h2>Team Performance Statistics</h2>
-        <div id="topTeams" class="team-stat"></div>
-        <div id="teamRanking" class="team-stat"></div>
-        <div id="topThreeTasks" class="team-stat"></div>
-        <div id="topThreeQuality" class="team-stat"></div>
+    <div class="card-container" style="flex-wrap: nowrap; justify-content: space-between; width: 100%;">
+        <div class="card" style="flex: 1; margin: 10px;">
+            <div class="balloon">🎈</div>
+            <h3>Top Team</h3>
+            <p id="topTeamText">N/A</p>
+        </div>
+        <div class="card" style="flex: 1; margin: 10px;">
+            <div class="balloon">🎈</div>
+            <h3>Team Ranking</h3>
+            <div id="teamRanking">N/A</div>
+        </div>
+        <div class="card" style="flex: 1; margin: 10px;">
+            <div class="balloon">🎈</div>
+            <h3>Top 3 Tasks</h3>
+            <div id="topThreeTasks">N/A</div>
+        </div>
+        <div class="card" style="flex: 1; margin: 10px;">
+            <div class="balloon">🎈</div>
+            <h3>Top 3 Quality</h3>
+            <div id="topThreeQuality">N/A</div>
+        </div>
     </div>
 
     <script>
@@ -208,7 +220,7 @@
         };
 
         const apiKey = 'AIzaSyDctNVWQhbsQMEDfJDXI30emaTd8mtviEY';
-		const sheetId = '1D3BOBVoqO-BHf_SfkBIlqK1i5x2v7k5uPN1oyzm0Rwo';
+        const sheetId = '1D3BOBVoqO-BHf_SfkBIlqK1i5x2v7k5uPN1oyzm0Rwo';
 
         let trackingData; // Declare trackingData as a global variable
 
@@ -217,6 +229,85 @@
             const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}!${range}?key=${apiKey}`);
             const data = await response.json();
             return data.values; // Return the values from the sheet
+        }
+
+        // دالة لعرض عدد عشوائي من البلالين أو قلوب حمراء
+        function showRandomBalloons() {
+            const balloonCount = Math.floor(Math.random() * 6) + 5; // عدد عشوائي من 5 إلى 10
+            const balloonContainer = document.querySelectorAll('.balloon');
+            const heartSymbol = '❤️'; // رمز القلب الأحمر
+
+            // إخفاء جميع البلالين أولاً
+            balloonContainer.forEach(balloon => {
+                balloon.style.opacity = '0';
+            });
+
+            // إظهار عدد عشوائي من البلالين أو قلوب حمراء
+            for (let i = 0; i < balloonCount; i++) {
+                const balloon = document.createElement('div');
+                balloon.className = 'balloon';
+                balloon.innerHTML = Math.random() < 0.5 ? '🎈' : heartSymbol; // اختيار عشوائي بين البالون ورمز القلب
+                balloon.style.position = 'absolute';
+                balloon.style.left = Math.random() * 100 + 'vw'; // موقع عشوائي على المحور الأفقي
+                balloon.style.top = Math.random() * 100 + 'vh'; // موقع عشوائي على المحور العمودي
+                balloon.style.opacity = '1';
+                balloon.style.transition = 'opacity 0.5s';
+                document.body.appendChild(balloon);
+
+                // تحريك البالون
+                setTimeout(() => {
+                    balloon.style.transform = `translateY(-${Math.random() * 50 + 50}px)`; // تحريك البالون لأعلى
+                }, 100);
+
+                // إخفاء البالونات بعد 5 ثواني
+                setTimeout(() => {
+                    balloon.style.opacity = '0';
+                    setTimeout(() => {
+                        balloon.remove(); // إزالة البالون من DOM بعد الاختفاء
+                    }, 500); // الانتظار حتى تنتهي عملية الاختفاء
+                }, 5000);
+            }
+        }
+
+        // دالة لتحديث القلب بجانب أعلى عضو في المهام
+        function updateTopHeart() {
+            const teamTableBody = document.getElementById("teamTableBody");
+            const rows = teamTableBody.getElementsByTagName("tr");
+            let topTaskMember = null;
+            let topQualityMember = null;
+
+            // البحث عن أعلى عضو في المهام والجودة
+            for (let row of rows) {
+                const tasksCompleted = parseInt(row.cells[4].innerText) || 0; // العمود "Tasks Completed Today"
+                const quality = parseInt(row.cells[5].innerText) || 0; // العمود "Quality"
+
+                if (tasksCompleted > 0 && (!topTaskMember || tasksCompleted > topTaskMember.tasks)) {
+                    topTaskMember = { row, tasks: tasksCompleted };
+                }
+                if (quality > 0 && (!topQualityMember || quality > topQualityMember.quality)) {
+                    topQualityMember = { row, quality };
+                }
+            }
+
+            // إزالة القلوب القديمة
+            const hearts = document.querySelectorAll('.heart');
+            hearts.forEach(heart => heart.remove());
+
+            // إضافة قلب بجانب أعلى عضو في المهام
+            if (topTaskMember) {
+                const heart = document.createElement('span');
+                heart.className = 'heart';
+                heart.innerHTML = '❤️';
+                topTaskMember.row.cells[0].appendChild(heart); // إضافة القلب في العمود الأول
+            }
+
+            // إضافة قلب بجانب أعلى عضو في الجودة
+            if (topQualityMember) {
+                const heart = document.createElement('span');
+                heart.className = 'heart';
+                heart.innerHTML = '❤️';
+                topQualityMember.row.cells[0].appendChild(heart); // إضافة القلب في العمود الأول
+            }
         }
 
         // تحديث الجدول حسب الفريق المختار
@@ -266,6 +357,12 @@
             // حساب الأداء العام للأعضاء
             calculateTeamPerformance();
             calculateIndividualPerformance();
+
+            // تحديث القلب بجانب أعلى عضو في المهام والجودة
+            updateTopHeart();
+
+            // إظهار البلالين بعد تحديث الجدول
+            showRandomBalloons();
         }
 
         // دالة لحساب أداء الفرق
@@ -296,12 +393,12 @@
             });
 
             // عرض أعلى فريق
-            const topTeamsDiv = document.getElementById("topTeams");
+            const topTeamsDiv = document.getElementById("topTeamText");
             const topTeam = sortedTeams[0];
             if (topTeam[1].tasksCompleted > 0 || topTeam[1].quality > 0) {
-                topTeamsDiv.innerHTML = `<h3>Top Team: <strong>${topTeam[0]}</strong> with <strong>${topTeam[1].tasksCompleted}</strong> tasks and <strong>${topTeam[1].quality}</strong> quality points</h3>`;
+                topTeamsDiv.innerHTML = `<strong>${topTeam[0]}</strong> with <strong>${topTeam[1].tasksCompleted}</strong> tasks and <strong>${topTeam[1].quality}</strong> quality points`;
             } else {
-                topTeamsDiv.innerHTML = `<h3>Top Team: <strong>N/A</strong></h3>`;
+                topTeamsDiv.innerHTML = `<strong>N/A</strong>`;
             }
 
             // عرض ترتيب الفرق
@@ -312,7 +409,7 @@
                 }
                 return ''; // Skip teams with zero tasks and quality
             }).filter(Boolean).join('<br>'); // Filter out empty strings
-            teamRankingDiv.innerHTML = `<h4>Team Ranking:</h4>${teamRankingHtml || 'No teams with tasks or quality points.'}`;
+            teamRankingDiv.innerHTML = `${teamRankingHtml || 'No teams with tasks or quality points.'}`;
         }
 
         // دالة لحساب أداء الأعضاء
@@ -339,14 +436,14 @@
             const topThreeTasksHtml = topThreeTasks.filter(person => person.tasksCompleted > 0).map(person => {
                 return `<strong>${person.name}</strong>: <strong>${person.tasksCompleted}</strong> tasks`;
             }).join('<br>');
-            document.getElementById("topThreeTasks").innerHTML = `<h4>Top 3 Individuals in Tasks:</h4>${topThreeTasksHtml || 'N/A'}`;
+            document.getElementById("topThreeTasks").innerHTML = `${topThreeTasksHtml || 'N/A'}`;
 
             // حساب أعلى 3 في الجودة
             const topThreeQuality = individualPerformance.sort((a, b) => b.quality - a.quality).slice(0, 3);
             const topThreeQualityHtml = topThreeQuality.filter(person => person.quality > 0).map(person => {
                 return `<strong>${person.name}</strong>: <strong>${person.quality}</strong> quality points`;
             }).join('<br>');
-            document.getElementById("topThreeQuality").innerHTML = `<h4>Top 3 Individuals in Quality:</h4>${topThreeQualityHtml || 'N/A'}`;
+            document.getElementById("topThreeQuality").innerHTML = `${topThreeQualityHtml || 'N/A'}`;
         }
 
         // دالة لنسخ الرابط إلى الحافظة
@@ -357,6 +454,14 @@
                 console.error("فشل في نسخ الرابط: ", err);
             });
         }
+
+        // استدعاء الدالة عند تحميل الصفحة
+        window.onload = function() {
+            const teamSelect = document.getElementById("teamSelect");
+            teamSelect.addEventListener('change', () => {
+                updateTable();
+            });
+        };
     </script>
 </body>
 </html>
