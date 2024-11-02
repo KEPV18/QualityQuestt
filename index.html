@@ -147,6 +147,7 @@
                 <th>Tasks Completed Today</th>
                 <th>Quality</th>
                 <th>Count for all queues</th>
+                <th>Edit</th>
             </tr>
         </thead>
         <tbody id="teamTableBody">
@@ -176,6 +177,18 @@
         </div>
     </div>
 
+    <div id="settingsIcon" style="position: absolute; top: 10px; right: 10px; cursor: pointer;">
+        <i class="fas fa-cog" title="Settings"></i>
+    </div>
+
+    <!-- Password input modal -->
+    <div id="passwordModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.5); z-index: 1000;">
+        <h3>Enter Password</h3>
+        <input type="password" id="passwordInput" placeholder="Enter password" />
+        <button id="submitPassword">Submit</button>
+        <button id="cancelPassword">Cancel</button>
+    </div>
+
     <script>
         // بيانات الفرق كاملة
         const teamDataStatic = {
@@ -194,11 +207,11 @@
                 { device: "C-66", email: "ME265378@meti.ai", batch: "T", name: "Mariam Mohamed Mostafa" }
             ],
             "Ahmed Khaled": [
-                { device: "C-67", email: "ME417298@meti.ai", batch: "T", name: "" },
+                { device: "C-67", email: "ME417298@meti.ai", batch: "T", name: "empty" },
                 { device: "C-68", email: "ME881481@meti.services", batch: "T", name: "nour hatem mohamed" },
                 { device: "C-69", email: "ME347094@meti.ai", batch: "T", name: "mariem al sayed al sayed" },
                 { device: "C-70", email: "ME174756@meti.services", batch: "P", name: "Sondos Walid" },
-                { device: "C-71", email: "ME409540@meti.services", batch: "T", name: "" },
+                { device: "C-71", email: "ME409540@meti.services", batch: "T", name: "empty" },
                 { device: "C-72", email: "ME681080@meti.services", batch: "P", name: "Sara Ashraf Mostafa" },
                 { device: "C-73", email: "ME138685@meti.services", batch: "P", name: "Retaj Naser Yehya" },
                 { device: "C-74", email: "ME568181@meti.services", batch: "P", name: "Eman Ahmed Ebrahim" },
@@ -209,10 +222,10 @@
             ],
             "aya": [
                 { device: "C-79", email: "ME961574@meti.services", batch: "P", name: "Mai Alaa" },
-                { device: "C-80", email: "ME651689@meti.services", batch: "P", name: "Menatt allah magdy" },
+                { device: "C-80", email: "ME651689@meti.services", batch: "P", name: "Menna Allah magdy" },
                 { device: "C-81", email: "ME348029@meti.services", batch: "P", name: "Sara Essam" },
                 { device: "C-82", email: "ME697393@meti.services", batch: "T", name: "Sondos Mostafa Mohamed" },
-                { device: "C-83", email: "ME345753@meti.services", batch: "T", name: "" },
+                { device: "C-83", email: "ME345753@meti.services", batch: "T", name: "empty" },
                 { device: "C-84", email: "ME288615@meti.services", batch: "P", name: "Asmaa saber" },
                 { device: "C-85", email: "ME335353@meti.services", batch: "P", name: "Youmna Haytham" },
                 { device: "C-86", email: "ME170820@meti.services", batch: "T", name: "Rojena shehata" },
@@ -256,7 +269,7 @@
                 balloon.style.transition = 'opacity 0.5s';
                 document.body.appendChild(balloon);
 
-                // تحريك البالون
+                // تحريك الباون
                 setTimeout(() => {
                     balloon.style.transform = `translateY(-${Math.random() * 50 + 50}px)`; // تحريك البالون لأعلى
                 }, 100);
@@ -332,7 +345,7 @@
 
             loader.style.display = 'none';
 
-            // تنظيف الجدول الحالي
+            // تنظيف ��لجدول الحالي
             teamTableBody.innerHTML = '';
 
             teamDataStatic[selectedTeam].forEach((member) => {
@@ -355,6 +368,7 @@
                     <td style="color: ${tasksColor};">${tasksCompleted}</td> <!-- لون النص للمهام -->
                     <td style="color: ${qualityColor};">${quality}</td> <!-- لون النص للجودة -->
                     <td>${additionalInfo}</td>
+                    <td></td>
                 `;
                 teamTableBody.appendChild(row);
             });
@@ -451,13 +465,80 @@
             document.getElementById("topThreeQuality").innerHTML = `${topThreeQualityHtml || 'N/A'}`;
         }
 
-        // دالة لنسخ الرابط إلى الحافظة
+        // دالة لنسخ الراط إلى الحافظة
         function copyToClipboard(link) {
             navigator.clipboard.writeText(link).then(() => {
                 alert("تم نسخ الرابط إلى الحافظة!");
             }).catch(err => {
                 console.error("فشل في نسخ الرابط: ", err);
             });
+        }
+
+        // دالة لفتح نافذة إدخال كلمة المرور
+        function openSettings() {
+            document.getElementById("passwordModal").style.display = "block"; // عرض مربع إدخال كلمة المرور
+        }
+
+        // دالة للتحقق من كلمة المرور
+        function checkPassword() {
+            const password = document.getElementById("passwordInput").value;
+            if (password === "123450") {
+                showEditIcons(); // عرض أيقونات التعديل
+                document.getElementById("passwordModal").style.display = "none"; // إخفاء مربع إدخال كلمة المرور
+            } else {
+                alert("Incorrect password!");
+            }
+        }
+
+        // إضافة حدث عند النقر على أيقونة الإعدادات
+        document.getElementById("settingsIcon").addEventListener("click", openSettings);
+        document.getElementById("submitPassword").addEventListener("click", checkPassword);
+        document.getElementById("cancelPassword").addEventListener("click", () => {
+            document.getElementById("passwordModal").style.display = "none"; // إخفاء مربع إدخال كلمة المرور
+        });
+
+        // دالة لإظهار أيقو��ات التعديل بجانب كل صف
+        function showEditIcons() {
+            const teamTableBody = document.getElementById("teamTableBody");
+            const rows = teamTableBody.getElementsByTagName("tr");
+
+            for (let row of rows) {
+                const editCell = document.createElement("td");
+                const editIcon = document.createElement("i");
+                editIcon.className = "fas fa-edit";
+                editIcon.style.cursor = "pointer";
+                editIcon.onclick = () => enableRowEditing(row);
+
+                const saveButton = document.createElement("button");
+                saveButton.innerText = "Save";
+                saveButton.style.marginLeft = "5px";
+                saveButton.onclick = () => saveRowData(row);
+
+                editCell.appendChild(editIcon);
+                editCell.appendChild(saveButton);
+                row.appendChild(editCell);
+            }
+        }
+
+        // دالة لتمكين التعديل في الصف
+        function enableRowEditing(row) {
+            for (let i = 0; i < 4; i++) { // تعديل أول 4 أعمدة
+                const cell = row.cells[i];
+                cell.contentEditable = true; // جعل الخلية قابلة للتعديل
+                cell.style.border = "1px dashed #2f855a"; // إضافة حدود لتوضيح أن الخلية قابلة للتعديل
+            }
+        }
+
+        // دالة لحفظ البيانات المعدلة
+        function saveRowData(row) {
+            const updatedData = [];
+            for (let i = 0; i < 4; i++) {
+                updatedData.push(row.cells[i].innerText); // حفظ البيانات من الأعمدة الأربعة
+                row.cells[i].contentEditable = false; // جعل الخلية غير قابلة للتعديل بعد الحفظ
+                row.cells[i].style.border = ""; // إزالة الحدود
+            }
+            console.log("Updated Data:", updatedData); // عرض البيانات المعدلة في وحدة التحكم
+            alert("Data saved successfully!"); // Notify user of successful save
         }
 
         // استدعاء الدالة عند تحميل الصفحة
