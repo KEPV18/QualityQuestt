@@ -373,63 +373,55 @@
                 teamTableBody.appendChild(row);
             });
 
-            // حساب الأداء العام للأعضاء
-            calculateTeamPerformance();
-            calculateIndividualPerformance();
+            // دالة لحساب أداء الفرق
+function calculateTeamPerformance() {
+    const performanceData = {};
 
-            // تحديث القلب بجانب أعلى عضو في المهام والجودة
-            updateTopHeart();
+    // جمع البيانات من جميع الفرق
+    for (const team in teamDataStatic) {
+        performanceData[team] = {
+            tasksCompleted: 0,
+            quality: 0,
+            memberCount: 0, // لحساب عدد الأعضاء الذين لديهم مهام أو جودة أكبر من صفر
+        };
 
-            // إظهار البلالين بعد تحديث الجدول
-            showRandomBalloons();
-        }
+        teamDataStatic[team].forEach(member => {
+            const trackingRow = trackingData.find(row => row[2] === member.email);
+            const tasksCompleted = trackingRow ? trackingRow[13] : 0; // العمود N
+            const quality = trackingRow ? trackingRow[12] : 0; // العمود M
 
-        // دالة لحساب أداء الفرق
-        function calculateTeamPerformance() {
-            const performanceData = {};
-
-            // جمع البيانات من جميع الفرق
-            for (const team in teamDataStatic) {
-                performanceData[team] = {
-                    tasksCompleted: 0,
-                    quality: 0,
-                    members: teamDataStatic[team]
-                };
-
-                teamDataStatic[team].forEach(member => {
-                    const trackingRow = trackingData.find(row => row[2] === member.email);
-                    const tasksCompleted = trackingRow ? trackingRow[13] : 0; // العمود N
-                    const quality = trackingRow ? trackingRow[12] : 0; // العمود M
-
-                    performanceData[team].tasksCompleted += parseInt(tasksCompleted) || 0;
-                    performanceData[team].quality += parseInt(quality) || 0;
-                });
+            if (tasksCompleted > 0 || quality > 0) {
+                performanceData[team].tasksCompleted += parseInt(tasksCompleted) || 0;
+                performanceData[team].quality += parseInt(quality) || 0;
+                performanceData[team].memberCount++; // زيادة عدد الأعضاء
             }
+        });
+    }
 
-            // حساب ترتيب الفرق
-            const sortedTeams = Object.entries(performanceData).sort((a, b) => {
-                return b[1].tasksCompleted - a[1].tasksCompleted;
-            });
+    // حساب ترتيب الفرق
+    const sortedTeams = Object.entries(performanceData).sort((a, b) => {
+        return b[1].tasksCompleted - a[1].tasksCompleted;
+    });
 
-            // عرض أعلى فريق
-            const topTeamsDiv = document.getElementById("topTeamText");
-            const topTeam = sortedTeams[0];
-            if (topTeam[1].tasksCompleted > 0 || topTeam[1].quality > 0) {
-                topTeamsDiv.innerHTML = `<strong>${topTeam[0]}</strong> with <strong>${topTeam[1].tasksCompleted}</strong> tasks and <strong>${topTeam[1].quality}</strong> quality points`;
-            } else {
-                topTeamsDiv.innerHTML = `<strong>N/A</strong>`;
-            }
+    // عرض أعلى فريق
+    const topTeamsDiv = document.getElementById("topTeamText");
+    const topTeam = sortedTeams[0];
+    if (topTeam[1].memberCount > 0) {
+        topTeamsDiv.innerHTML = `<strong>${topTeam[0]}</strong> with <strong>${topTeam[1].tasksCompleted}</strong> tasks and <strong>${topTeam[1].quality}</strong> quality points`;
+    } else {
+        topTeamsDiv.innerHTML = `<strong>N/A</strong>`;
+    }
 
-            // عرض ترتيب الفرق
-            const teamRankingDiv = document.getElementById("teamRanking");
-            const teamRankingHtml = sortedTeams.map((team, index) => {
-                if (team[1].tasksCompleted > 0 || team[1].quality > 0) {
-                    return `${index + 1}. <strong>${team[0]}</strong>: <strong>${team[1].tasksCompleted}</strong> tasks, <strong>${team[1].quality}</strong> quality points`;
-                }
-                return ''; // Skip teams with zero tasks and quality
-            }).filter(Boolean).join('<br>'); // Filter out empty strings
-            teamRankingDiv.innerHTML = `${teamRankingHtml || 'No teams with tasks or quality points.'}`;
+    // عرض ترتيب الفرق
+    const teamRankingDiv = document.getElementById("teamRanking");
+    const teamRankingHtml = sortedTeams.map((team, index) => {
+        if (team[1].memberCount > 0) { // استخدام memberCount هنا
+            return `${index + 1}. <strong>${team[0]}</strong>: <strong>${team[1].tasksCompleted}</strong> tasks, <strong>${team[1].quality}</strong> quality points`;
         }
+        return ''; // تخطي الفرق التي ليس لديها مهام أو جودة
+    }).filter(Boolean).join('<br>'); // تصفية السلاسل الفارغة
+    teamRankingDiv.innerHTML = `${teamRankingHtml || 'No teams with tasks or quality points.'}`;
+}
 
         // دالة لحسب أداء الأعضاء
         function calculateIndividualPerformance() {
