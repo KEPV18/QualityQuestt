@@ -373,9 +373,20 @@
                 teamTableBody.appendChild(row);
             });
 
+             // حساب الأداء العام للأعضاء
+            calculateTeamPerformance();
+            calculateIndividualPerformance();
+            // تحديث القلب بجانب أعلى عضو في المهام والجودة
+            updateTopHeart();
+            // إظهار البلالين بعد تحديث الجدول
+            showRandomBalloons();
+        }
+
             // دالة لحساب أداء الفرق
 function calculateTeamPerformance() {
     const performanceData = {};
+
+    
 
     // جمع البيانات من جميع الفرق
     for (const team in teamDataStatic) {
@@ -384,6 +395,15 @@ function calculateTeamPerformance() {
             quality: 0,
             memberCount: 0, // لحساب عدد الأعضاء الذين لديهم مهام أو جودة أكبر من صفر
         };
+
+        teamDataStatic[team].forEach(member => {
+                    const trackingRow = trackingData.find(row => row[2] === member.email);
+                    const tasksCompleted = trackingRow ? trackingRow[13] : 0; // العمود N
+                    const quality = trackingRow ? trackingRow[12] : 0; // العمود M
+                    performanceData[team].tasksCompleted += parseInt(tasksCompleted) || 0;
+                    performanceData[team].quality += parseInt(quality) || 0;
+                });
+            }
 
         teamDataStatic[team].forEach(member => {
             const trackingRow = trackingData.find(row => row[2] === member.email);
