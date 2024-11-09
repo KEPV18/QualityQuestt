@@ -279,47 +279,62 @@
             loader.style.display = 'none';
             teamTableBody.innerHTML = '';
 
-            trackingData.forEach((row, index) => {
-                if (row[1] === selectedTeam) {
-                    const device = row[0] || "N/A";
-                    const email = row[2] || "N/A";
-                    const name = row[5] || "N/A";
-                    const tasksCompleted = row[13] || "N/A";
-                    const quality = row[12] || "N/A";
-                    const qualityForAll = row[7] || "N/A";
-                    const lastTaskLink = row[24] || "";
+            // Filter and sort the data based on qualityForAll
+            const teamData = trackingData.filter(row => row[1] === selectedTeam)
+                .map(row => ({
+                    device: row[0] || "N/A",
+                    email: row[2] || "N/A",
+                    name: row[5] || "N/A",
+                    tasksCompleted: row[13] || "N/A",
+                    quality: parseFloat(row[12]) || 0,
+                    qualityForAll: parseFloat(row[7]) || 0,
+                    lastTaskLink: row[24] || ""
+                }))
+                .sort((a, b) => {
+                    // Sort by qualityForAll in descending order
+                    const qualityA = parseFloat(a.qualityForAll) || 0;
+                    const qualityB = parseFloat(b.qualityForAll) || 0;
+                    return qualityB - qualityA;
+                });
 
-                    const rowElement = document.createElement("tr");
-                    const tasksColor = tasksCompleted < 70 ? 'red' : 'green';
-                    const qualityValue = parseFloat(quality);
-                    const qualityColor = qualityValue < 75 && quality !== "N/A" ? 'red' : 'green';
+            // Add sorted data to the table
+            teamData.forEach((member, index) => {
+                const rowElement = document.createElement("tr");
+                const tasksColor = member.tasksCompleted < 70 ? 'red' : 'green';
+                const qualityColor = member.quality < 75 ? 'red' : 'green';
 
-                    rowElement.innerHTML = `
-                        <td>${device}</td>
-                        <td>${email}</td>
-                        <td>${name}</td>
-                        <td>${qualityForAll}</td>
-                        <td style="color: ${tasksColor};">${tasksCompleted}</td>
-                        <td style="color: ${qualityColor};">${quality}</td>
-                        <td>
-                            ${lastTaskLink ? `<button onclick="copyToClipboard('${lastTaskLink}')" class="copy-button">
-                                <i class="fas fa-copy"></i> Copy Last Task
-                            </button>` : 'N/A'}
-                        </td>
-                    `;
-                    rowElement.classList.add('fade-in');
-                    teamTableBody.appendChild(rowElement);
+                // Determine rank suffix
+                const rankSuffix = (index + 1) === 1 ? 'st' : (index + 1) === 2 ? 'nd' : (index + 1) === 3 ? 'rd' : 'th';
+                const rankDisplay = `<span style="color: #daa520;">${index + 1}${rankSuffix} ⭐</span>`;
 
-                    setTimeout(() => {
-                        rowElement.classList.add('visible');
-                    }, index * 100);
-                }
+                rowElement.innerHTML = `
+                    <td>${member.device}</td>
+                    <td>${member.email}</td>
+                    <td>${member.name}</td>
+                    <td>${member.qualityForAll} ${rankDisplay}</td>
+                    <td style="color: ${tasksColor};">${member.tasksCompleted}</td>
+                    <td style="color: ${qualityColor};">${member.quality}</td>
+                    <td>
+                        ${member.lastTaskLink ? `<button onclick="copyToClipboard('${member.lastTaskLink}')" class="copy-button">
+                            <i class="fas fa-copy"></i> Copy Last Task
+                        </button>` : 'N/A'}
+                    </td>
+                `;
+                rowElement.classList.add('fade-in');
+                teamTableBody.appendChild(rowElement);
+
+                setTimeout(() => {
+                    rowElement.classList.add('visible');
+                }, index * 100);
             });
 
             calculateTeamPerformance();
             calculateIndividualPerformance();
             updateTopHeart();
             showRandomBalloons();
+
+            // Auto-refresh the table every minute to keep rankings updated
+            setTimeout(updateTable, 60000);
         }
 
         function showRandomBalloons() {
