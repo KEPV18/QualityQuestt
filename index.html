@@ -12,27 +12,69 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #1a1a1a;
-            color: #ffffff;
+            background-color: #121212;
+            color: #e0e0e0;
         }
         h1, h2, h3, h4 {
             color: #ff69b4;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
         p {
             margin-bottom: 40px;
         }
         #teamSelect {
             margin-bottom: 20px;
-            padding: 10px;
+            padding: 15px 25px;
             font-size: 16px;
-            border: 1px solid #ff69b4;
-            border-radius: 5px;
-            transition: border-color 0.3s;
-            background-color: #2d2d2d;
-            color: #ffffff;
+            border: 2px solid #ff69b4;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #1f1f1f, #2a2a2a);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            color: #e0e0e0;
+            font-weight: 500;
+            cursor: pointer;
+            outline: none;
+            min-width: 200px;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: linear-gradient(45deg, #2d2d2d, #232323),
+                url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FF69B4%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px top 50%, 0 0;
+            background-size: 12px auto, 100%;
+            padding-right: 40px;
+        }
+        #teamSelect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
+            border-color: #ff1493;
         }
         #teamSelect:focus {
-            border-color: #ff69b4;
+            border-color: #ff1493;
+            box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.3);
+        }
+        #teamSelect option {
+            padding: 15px;
+            background-color: #2d2d2d;
+            color: #ffffff;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+        #teamSelect option:hover {
+            background-color: #ff69b4;
+            color: white;
+        }
+        #teamSelect option:checked {
+            background-color: #ff69b4;
+            color: white;
+            font-weight: bold;
+        }
+        #teamSelect option:first-child {
+            font-style: italic;
+            color: #cccccc;
         }
         table {
             border-collapse: collapse;
@@ -41,6 +83,7 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             border-radius: 10px;
             overflow: hidden;
+            background: #1f1f1f;
         }
         th, td {
             border: 1px solid #ff69b4;
@@ -49,8 +92,10 @@
             color: #ffffff;
         }
         th {
-            background-color: #800040;
-            color: #ffffff;
+            background: linear-gradient(45deg, #800040, #ff69b4);
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         tr:nth-child(even) {
             background-color: #2d2d2d;
@@ -59,7 +104,8 @@
             background-color: #232323;
         }
         tr:hover {
-            background-color: #3d3d3d;
+            background: #2a2a2a;
+            transition: all 0.3s ease;
         }
         .card-container {
             display: flex;
@@ -69,8 +115,8 @@
             flex-wrap: wrap;
         }
         .card {
-            background-color: #2d2d2d;
-            border: 2px solid #ff69b4;
+            background-color: #1f1f1f;
+            border: 1px solid #ff69b4;
             border-radius: 10px;
             padding: 20px;
             width: 22%;
@@ -78,11 +124,14 @@
             position: relative;
             margin: 10px;
             transition: transform 0.3s;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             color: #ffffff;
+            transform-origin: center;
+            transition: all 0.3s ease;
         }
         .card:hover {
-            transform: scale(1.05);
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.2);
         }
         .balloon {
             font-size: 30px;
@@ -109,8 +158,47 @@
         .loader {
             display: none;
             margin: 20px auto;
-            font-size: 24px;
-            color: #cc0000;
+            width: 50px;
+            height: 50px;
+            border: 4px solid #ff69b4;
+            border-radius: 50%;
+            border-top-color: transparent;
+            transform-origin: center center;
+            animation: spin 0.8s linear infinite;
+            background: conic-gradient(transparent, #ff69b4);
+        }
+        .loader::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60px;
+            height: 60px;
+            border: 3px solid #ff69b4;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.3;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        .loader::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            background-color: #1a1a1a;
+            border-radius: 50%;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.5; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
         }
         @media (max-width: 768px) {
             body {
@@ -131,15 +219,20 @@
 
         .copy-button {
             padding: 5px 10px;
-            background-color: #800040;
-            color: white;
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            color: #ffffff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            letter-spacing: 0.5px;
         }
 
         .copy-button:hover {
-            background-color: #660033;
+            background: linear-gradient(45deg, #ff1493, #ff69b4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
         }
 
         .fade-in {
@@ -159,14 +252,39 @@
         }
 
         #notification {
-            background-color: #2d2d2d;
+            background: #ff69b4;
             color: #ffffff;
+        }
+
+        h1 {
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin: 30px 0;
+        }
+
+        #notification {
+            background: linear-gradient(45deg, #0db854, #00ff7f);
+            transform: translateY(100px);
+            transition: all 0.5s ease;
+        }
+
+        #notification.show {
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
     <div id="welcomeMessage">Welcome to TT, short for Team Tracker by Ahmed Khaled</div>
     <h1>Team Tracker</h1>
+    
+    <!-- Encouragement message -->
+    <div id="encouragementMessage" style="color: #daa520; font-size: 1.2em; margin-bottom: 20px;"></div>
+    
     <select id="teamSelect" onchange="updateTable()">
         <option value="">Select Team</option>
         <option value="nermin">Nermin</option>
@@ -174,7 +292,7 @@
         <option value="aya">Aya</option>
     </select>
 
-    <div class="loader" id="loader"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+    <div class="loader" id="loader"></div>
 
     <table border="1" id="teamTable">
         <thead>
@@ -429,9 +547,11 @@
             const notification = document.getElementById("notification");
             notification.textContent = message;
             notification.style.display = 'block';
+            notification.classList.add('show');
 
             setTimeout(() => {
                 notification.style.display = 'none';
+                notification.classList.remove('show');
             }, 3000); // Hide after 3 seconds
         }
 
@@ -528,13 +648,75 @@
             document.getElementById("topThreeQuality").innerHTML = `${topThreeQualityHtml || 'N/A'}`;
         }
 
+        const encouragementMessages = [
+            "Keep up the hard work!",
+            "You're making progress!",
+            "Stay focused on your goals!",
+            "Your effort is paying off!",
+            "Keep pushing forward!",
+            "You're doing great work!",
+            "Stay committed!",
+            "Your dedication shows!",
+            "Keep striving for success!",
+            "You're on the right path!",
+            "Stay motivated!",
+            "Your hard work matters!",
+            "Keep aiming high!",
+            "You're achieving your goals!",
+            "Stay determined!",
+            "Your persistence is key!",
+            "Keep improving!",
+            "You're building success!",
+            "Stay on track!",
+            "Your work is valuable!",
+            "Keep reaching for more!",
+            "You're making a difference!",
+            "Stay productive!",
+            "Your focus is impressive!",
+            "Keep setting new goals!",
+            "You're a hard worker!",
+            "Stay ambitious!",
+            "Your progress is inspiring!",
+            "Keep challenging yourself!",
+            "You're a go-getter!",
+            "Stay driven!",
+            "Your efforts are noticed!",
+            "Keep up the momentum!",
+            "You're achieving great things!",
+            "Stay on your path!",
+            "Your work ethic is strong!",
+            "Keep pushing your limits!",
+            "You're a dedicated worker!",
+            "Stay on your journey!",
+            "Your goals are within reach!",
+            "Keep striving for excellence!",
+            "You're a valuable team member!",
+            "Stay focused on success!",
+            "Your hard work is inspiring!",
+            "Keep building your future!",
+            "You're a committed worker!",
+            "Stay on your mission!",
+            "Your dedication is admirable!",
+            "Keep moving forward!",
+            "You're a determined worker!"
+        ];
+
+        function showRandomEncouragementMessage() {
+            const messageElement = document.getElementById("encouragementMessage");
+            const randomIndex = Math.floor(Math.random() * encouragementMessages.length);
+            messageElement.textContent = encouragementMessages[randomIndex];
+        }
+
         window.onload = function() {
             populateTeamSelect(); // Populate team select on load
             const teamSelect = document.getElementById("teamSelect");
             teamSelect.addEventListener('change', () => {
                 updateTable();
             });
-            
+
+            // Show a random encouragement message every 5 minutes
+            showRandomEncouragementMessage();
+            setInterval(showRandomEncouragementMessage, 300000); // 300000 ms = 5 minutes
         };
     </script>
 </body>
