@@ -197,13 +197,19 @@ tr:hover {
     }
     table {
         width: 100%;
+        table-layout: fixed;
+        font-size: 0.9em;
+    }
+    th, td {
+        padding: 8px;
+        word-wrap: break-word;
     }
     .card-container {
         flex-direction: column;
         align-items: center;
     }
     .card {
-        width: 80%;
+        width: 100%;
         margin-bottom: 20px;
     }
 }
