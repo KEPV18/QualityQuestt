@@ -7,16 +7,25 @@ let teamNames = new Set();
 async function fetchGoogleSheetData(sheetName, range) {
     const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}!${range}?key=${apiKey}`);
     const data = await response.json();
+    
+    // التحقق من وجود البيانات بالشكل الصحيح
+    if (!data || !data.values || !Array.isArray(data.values)) {
+        console.error("البيانات غير صحيحة أو غير موجودة:", data);
+        return []; // إرجاع مصفوفة فارغة في حال حدوث خطأ
+    }
     return data.values;
 }
 
 async function populateTeamSelect() {
     try {
         const data = await fetchGoogleSheetData("tracking(M)", "B3:B1000");
+
+        // التحقق من أن البيانات موجودة وهي مصفوفة
         if (!data || !Array.isArray(data)) {
-            console.error("Data is not an array or is undefined:", data);
+            console.error("البيانات ليست مصفوفة أو غير موجودة:", data);
             return;
         }
+
         data.forEach(row => {
             if (row[0]) {
                 teamNames.add(row[0]);
@@ -32,7 +41,7 @@ async function populateTeamSelect() {
             teamSelect.appendChild(option);
         });
     } catch (error) {
-        console.error("Error fetching or processing data:", error);
+        console.error("حدث خطأ أثناء جلب أو معالجة البيانات:", error);
     }
 }
 
@@ -116,7 +125,6 @@ function showRandomBalloons() {
     const balloonCount = Math.floor(Math.random() * 26) + 15;
     const balloonContainer = document.querySelectorAll('.balloon');
     const symbols = ['🎈', '❤️', '🎉', '✨', '🎊', '🎁', '💪', '😎', '🏆', '🔥', '💯', '🍾', '🌟'];
-
 
     balloonContainer.forEach(balloon => {
         balloon.style.opacity = '0';
@@ -228,140 +236,56 @@ function calculateTeamPerformance() {
         });
 
         if (performanceData[team].activeMembers > 0) {
-            performanceData[team].averageTasks = Math.round(performanceData[team].tasksCompleted / performanceData[team].activeMembers);
-            performanceData[team].averageQuality = Math.round(performanceData[team].quality / performanceData[team].activeMembers);
+            performanceData[team].averageTasks = performanceData[team].tasksCompleted / performanceData[team].activeMembers;
+            performanceData[team].averageQuality = performanceData[team].quality / performanceData[team].activeMembers;
         }
     });
 
-    const sortedTeams = Object.entries(performanceData).sort((a, b) => {
-        return b[1].averageTasks - a[1].averageTasks;
+    updateTeamLeaderboard(performanceData);
+}
+
+function updateTeamLeaderboard(performanceData) {
+    const leaderboard = document.getElementById("leaderboard");
+    leaderboard.innerHTML = '';
+
+    const sortedTeams = Object.keys(performanceData).sort((a, b) => {
+        const teamA = performanceData[a];
+        const teamB = performanceData[b];
+        return teamB.averageQuality - teamA.averageQuality;
     });
 
-    const topTeamsDiv = document.getElementById("topTeamText");
-    const topTeam = sortedTeams[0];
-    if (topTeam && topTeam[1].activeMembers > 0) {
-        topTeamsDiv.innerHTML = `
-            <strong>${topTeam[0]}</strong> with average of 
-            <strong>${topTeam[1].averageTasks}</strong> tasks and 
-            <strong>${topTeam[1].averageQuality}</strong> quality points per active member 
-            (${topTeam[1].activeMembers} active members)`;
-    } else {
-        topTeamsDiv.innerHTML = `<strong>N/A</strong>`;
-    }
-
-    const teamRankingDiv = document.getElementById("teamRanking");
-    const teamRankingHtml = sortedTeams.map((team, index) => {
-        if (team[1].activeMembers > 0) {
-            return `${index + 1}. <strong>${team[0]}</strong>: 
-                    Average <strong>${team[1].averageTasks}</strong> tasks, 
-                    <strong>${team[1].averageQuality}</strong> quality points 
-                    (${team[1].activeMembers} active members)`;
-        }
-        return '';
-    }).filter(Boolean).join('<br>');
-    teamRankingDiv.innerHTML = `${teamRankingHtml || 'No teams with active members.'}`;
+    sortedTeams.forEach(team => {
+        const teamInfo = performanceData[team];
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${team}</td>
+            <td>${teamInfo.averageTasks.toFixed(2)}</td>
+            <td>${teamInfo.averageQuality.toFixed(2)}</td>
+        `;
+        leaderboard.appendChild(row);
+    });
 }
 
 function calculateIndividualPerformance() {
-    const individualPerformance = [];
+    const teamTableBody = document.getElementById("teamTableBody");
+    const rows = teamTableBody.getElementsByTagName("tr");
 
-    for (const team in teamNames) {
-        trackingData.forEach(row => {
-            if (row[1] === team) {
-                const tasksCompleted = parseInt(row[13]) || 0;
-                const quality = parseInt(row[12]) || 0;
+    let highestQuality = 0;
+    let highestQualityRow = null;
 
-                if (tasksCompleted > 1 && quality > 1) {
-                    individualPerformance.push({
-                        name: row[5],
-                        tasksCompleted: tasksCompleted,
-                        quality: quality
-                    });
-                }
-            }
-        });
+    for (let row of rows) {
+        const quality = parseFloat(row.cells[5].innerText) || 0;
+
+        if (quality > highestQuality) {
+            highestQuality = quality;
+            highestQualityRow = row;
+        }
     }
 
-    const topThreeTasks = individualPerformance.sort((a, b) => b.tasksCompleted - a.tasksCompleted).slice(0, 3);
-    const topThreeTasksHtml = topThreeTasks.map(person => {
-        return `<strong>${person.name}</strong>: <strong>${person.tasksCompleted}</strong> tasks`;
-    }).join('<br>');
-    document.getElementById("topThreeTasks").innerHTML = `${topThreeTasksHtml || 'N/A'}`;
-
-    const topThreeQuality = individualPerformance.sort((a, b) => b.quality - a.quality).slice(0, 3);
-    const topThreeQualityHtml = topThreeQuality.map(person => {
-        return `<strong>${person.name}</strong>: <strong>${person.quality}</strong> quality points`;
-    }).join('<br>');
-    document.getElementById("topThreeQuality").innerHTML = `${topThreeQualityHtml || 'N/A'}`;
+    if (highestQualityRow) {
+        highestQualityRow.classList.add("top-quality");
+    }
 }
 
-const encouragementMessages = [
-    "Keep up the hard work!",
-    "You're making progress!",
-    "Stay focused on your goals!",
-    "Your effort is paying off!",
-    "Keep pushing forward!",
-    "You're doing great work!",
-    "Stay committed!",
-    "Your dedication shows!",
-    "Keep striving for success!",
-    "You're on the right path!",
-    "Stay motivated!",
-    "Your hard work matters!",
-    "Keep aiming high!",
-    "You're achieving your goals!",
-    "Stay determined!",
-    "Your persistence is key!",
-    "Keep improving!",
-    "You're building success!",
-    "Stay on track!",
-    "Your work is valuable!",
-    "Keep reaching for more!",
-    "You're making a difference!",
-    "Stay productive!",
-    "Your focus is impressive!",
-    "Keep setting new goals!",
-    "You're a hard worker!",
-    "Stay ambitious!",
-    "Your progress is inspiring!",
-    "Keep challenging yourself!",
-    "You're a go-getter!",
-    "Stay driven!",
-    "Your efforts are noticed!",
-    "Keep up the momentum!",
-    "You're achieving great things!",
-    "Stay on your path!",
-    "Your work ethic is strong!",
-    "Keep pushing your limits!",
-    "You're a dedicated worker!",
-    "Stay on your journey!",
-    "Your goals are within reach!",
-    "Keep striving for excellence!",
-    "You're a valuable team member!",
-    "Stay focused on success!",
-    "Your hard work is inspiring!",
-    "Keep building your future!",
-    "You're a committed worker!",
-    "Stay on your mission!",
-    "Your dedication is admirable!",
-    "Keep moving forward!",
-    "You're a determined worker!"
-];
-
-function showRandomEncouragementMessage() {
-    const messageElement = document.getElementById("encouragementMessage");
-    const randomIndex = Math.floor(Math.random() * encouragementMessages.length);
-    messageElement.textContent = encouragementMessages[randomIndex];
-}
-
-window.onload = function() {
-    populateTeamSelect(); // Populate team select on load
-    const teamSelect = document.getElementById("teamSelect");
-    teamSelect.addEventListener('change', () => {
-        updateTable();
-    });
-
-    // Show a random encouragement message every 5 minutes
-    showRandomEncouragementMessage();
-    setInterval(showRandomEncouragementMessage, 300000); // 300000 ms = 5 minutes
-};
+// Call populateTeamSelect to initialize the dropdown
+populateTeamSelect();
