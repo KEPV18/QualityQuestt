@@ -7,7 +7,7 @@ body {
     color: #e0e0e0;
 }
 h1, h2, h3, h4 {
-    color: #ff6347;
+    color: #ff69b4;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 p {
@@ -17,7 +17,7 @@ p {
     margin-bottom: 20px;
     padding: 15px 25px;
     font-size: 16px;
-    border: 2px solid #ff6347;
+    border: 2px solid #ff69b4;
     border-radius: 8px;
     transition: all 0.3s ease;
     background: linear-gradient(45deg, #1f1f1f, #2a2a2a);
@@ -55,11 +55,11 @@ p {
     cursor: pointer;
 }
 #teamSelect option:hover {
-    background-color: #ff6347;
+    background-color: #ff69b4;
     color: white;
 }
 #teamSelect option:checked {
-    background-color: #ff6347;
+    background-color: #ff69b4;
     color: white;
     font-weight: bold;
 }
@@ -77,13 +77,13 @@ table {
     background: #1f1f1f;
 }
 th, td {
-    border: 1px solid #ff6347;
+    border: 1px solid #ff69b4;
     padding: 12px;
     text-align: center;
     color: #ffffff;
 }
 th {
-    background: linear-gradient(45deg, #800040, #ff6347);
+    background: linear-gradient(45deg, #800040, #ff69b4);
     font-size: 1.1em;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -107,7 +107,7 @@ tr:hover {
 }
 .card {
     background-color: #1f1f1f;
-    border: 1px solid #ff6347;
+    border: 1px solid #ff69b4;
     border-radius: 10px;
     padding: 20px;
     width: 22%;
@@ -151,12 +151,12 @@ tr:hover {
     margin: 20px auto;
     width: 50px;
     height: 50px;
-    border: 4px solid #ff6347;
+    border: 4px solid #ff69b4;
     border-radius: 50%;
     border-top-color: transparent;
     transform-origin: center center;
     animation: spin 0.8s linear infinite;
-    background: conic-gradient(transparent, #ff6347);
+    background: conic-gradient(transparent, #ff69b4);
 }
 .loader::after {
     content: '';
@@ -165,7 +165,7 @@ tr:hover {
     left: 50%;
     width: 60px;
     height: 60px;
-    border: 3px solid #ff6347;
+    border: 3px solid #ff69b4;
     border-radius: 50%;
     transform: translate(-50%, -50%);
     opacity: 0.3;
@@ -216,7 +216,7 @@ tr:hover {
 
 .copy-button {
     padding: 5px 10px;
-    background: linear-gradient(45deg, #ff6347, #ff1493);
+    background: linear-gradient(45deg, #ff69b4, #ff1493);
     color: #ffffff;
     border: none;
     border-radius: 4px;
@@ -227,7 +227,7 @@ tr:hover {
 }
 
 .copy-button:hover {
-    background: linear-gradient(45deg, #ff1493, #ff6347);
+    background: linear-gradient(45deg, #ff1493, #ff69b4);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
 }
@@ -249,12 +249,12 @@ td:nth-child(3) {
 }
 
 #notification {
-    background: #ff6347;
+    background: #ff69b4;
     color: #ffffff;
 }
 
 h1 {
-    background: linear-gradient(45deg, #ff6347, #ff1493);
+    background: linear-gradient(45deg, #ff69b4, #ff1493);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -272,4 +272,313 @@ h1 {
 
 #notification.show {
     transform: translateY(0);
+}
+
+/* مؤشرات الحالة */
+.status-container {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.status-indicator {
+    width: auto;
+    height: 10px;
+    display: inline-block;
+    margin-right: 5px;
+    padding: 5px;
+    background-color: #333;
+    color: #fff;
+    font-size: 12px;
+    line-height: 10px;
+}
+
+.status-indicator.online {
+    background-color: #4CAF50;
+}
+
+.status-indicator.offline {
+    background-color: #f44336;
+    box-shadow: 0 0 5px #f44336;
+}
+
+.status-indicator.loading {
+    background-color: #FFC107;
+    animation: blink 1s infinite;
+}
+
+.status-indicator.warning {
+    background-color: #ff9800;
+    box-shadow: 0 0 5px #ff9800;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+}
+
+/* مؤشر التحميل المتقدم */
+.loader-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #f0f0f0;
+    display: none;
+    z-index: 1000;
+}
+
+.loader-spinner {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #2196F3 0%, #4CAF50 100%);
+    transform-origin: left;
+    animation: loading 1.5s infinite linear;
+}
+
+.loader-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #4CAF50;
+    transition: width 0.3s ease;
+}
+
+/* الإشعارات */
+.notifications-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.notification {
+    background-color: white;
+    border-left: 4px solid #4CAF50;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    padding: 12px 20px;
+    margin-top: 10px;
+    border-radius: 4px;
+    animation: slideIn 0.3s ease;
+}
+
+.notification.error {
+    border-left-color: #f44336;
+}
+
+.notification.warning {
+    border-left-color: #ff9800;
+}
+
+/* رسائل الخطأ */
+.error-container {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    text-align: center;
+    z-index: 1000;
+}
+
+.retry-button {
+    margin-top: 15px;
+    padding: 8px 16px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.retry-button:hover {
+    background-color: #1976D2;
+}
+
+/* الرسوم المتحركة */
+@keyframes loading {
+    0% { transform: scaleX(0); }
+    50% { transform: scaleX(0.5); }
+    100% { transform: scaleX(1); }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* تحسينات الأداء */
+.performance-container {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(0,0,0,0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    z-index: 1000;
+}
+
+/* تحسينات للأجهزة المحمولة */
+@media (max-width: 768px) {
+    .status-container {
+        top: auto;
+        bottom: 10px;
+    }
+
+    .notifications-container {
+        left: 20px;
+        right: 20px;
+    }
+
+    .notification {
+        margin: 5px 0;
+    }
+}
+
+/* تحسينات لوضع الظلام */
+@media (prefers-color-scheme: dark) {
+    .notification {
+        background-color: #333;
+        color: white;
+    }
+
+    .error-container {
+        background-color: #333;
+        color: white;
+    }
+}
+
+/* Creative Loader Styles */
+.loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(18, 18, 18, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+}
+
+.loader-wrapper.active {
+    display: flex;
+}
+
+.star-loader {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    animation: rotate 2s linear infinite;
+}
+
+.star {
+    position: absolute;
+    font-size: 24px;
+    color: #ff69b4;
+    text-shadow: 0 0 10px #ff69b4;
+    animation: twinkle 1s ease-in-out infinite;
+}
+
+.star1 { top: 0; left: 50%; transform: translateX(-50%); animation-delay: 0s; }
+.star2 { top: 50%; right: 0; transform: translateY(-50%); animation-delay: 0.2s; }
+.star3 { bottom: 0; left: 50%; transform: translateX(-50%); animation-delay: 0.4s; }
+.star4 { top: 50%; left: 0; transform: translateY(-50%); animation-delay: 0.6s; }
+.star5 { top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 0.8s; }
+
+.loading-text {
+    margin-top: 20px;
+    color: #ff69b4;
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.dots {
+    display: inline-block;
+    width: 20px;
+    animation: dots 1.5s infinite;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes dots {
+    0% { content: '.'; }
+    33% { content: '..'; }
+    66% { content: '...'; }
+    100% { content: '.'; }
+}
+
+/* تحسين مظهر النجوم عند التحويم */
+.star:hover {
+    color: #ff1493;
+    text-shadow: 0 0 20px #ff1493;
+    animation-play-state: paused;
+}
+
+/* إضافة تأثير الضوء المتوهج */
+.star-loader::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(255,105,180,0.2) 0%, rgba(255,105,180,0) 70%);
+    animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+    50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.8; }
+}
+
+#last-update-status {
+    background-color: #2196F3;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 5px;
+    transition: transform 0.2s;
+}
+
+.icon-button:hover {
+    transform: scale(1.2);
+}
+
+.icon-button:active {
+    transform: scale(0.95);
 }
